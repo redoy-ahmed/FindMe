@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.pin_user_dialog.view.*
+import java.util.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.InfoWindowAdapter,
@@ -187,15 +190,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             mCurrLocationMarker!!.remove()
         }
 
-        //Place current location marker
-        val latLng = LatLng(location?.latitude!!, location.longitude)
+        latitude = location?.latitude!!
+        longitude = location.longitude
+
+        val latLng = LatLng(latitude, longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
         markerOptions.title("My Location")
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_marker))
         mCurrLocationMarker = mMap?.addMarker(markerOptions)
-
-        //move map camera
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
     }
 
@@ -284,11 +287,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     override fun getInfoContents(marker: Marker?): View {
-        val view = layoutInflater.inflate(R.layout.custom_marker_info_window, null)
+        val view: View? = null
 
-        val textViewName = view.findViewById(R.id.textViewName) as TextView
-        val labelLocation = view.findViewById(R.id.lbl_location) as TextView
-        val labelPhone = view.findViewById(R.id.lbl_price) as TextView
+        if (marker?.title == "My Location") {
+            layoutInflater.inflate(R.layout.custom_marker_info_window, null)
+            val textViewName = view?.findViewById(R.id.textViewName) as TextView
+            val textViewLocation = view.findViewById(R.id.lbl_location) as TextView
+
+            textViewName.text = "Share My Location"
+            //textViewLocation.text =
+
+        } else {
+            layoutInflater.inflate(R.layout.custom_marker_info_window_public, null)
+            val textViewName = view?.findViewById(R.id.textViewName) as TextView
+            val textViewLocation = view.findViewById(R.id.lbl_location) as TextView
+        }
 
         return view
     }
@@ -299,7 +312,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
         val mBuilder = AlertDialog.Builder(this)
             .setView(mDialogView)
-            .setTitle("Set Location")
+            .setTitle("Share Location")
         val mAlertDialog = mBuilder.show()
         mDialogView.shareButton.setOnClickListener {
             mAlertDialog.dismiss()
@@ -310,7 +323,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
             pDialog!!.show()
 
-            shareLocation(name, email, phone, location)
+            shareLocation(name, email, phone, latitude.toString(), longitude.toString(), location)
         }
         mDialogView.cancelButton.setOnClickListener {
             mAlertDialog.dismiss()
@@ -320,13 +333,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         startActivity(intent)*/
     }
 
-    private fun shareLocation(name: String, email: String, phone: String, location: String) {
+    private fun shareLocation(
+        name: String,
+        email: String,
+        phone: String,
+        latitude: String,
+        longitude: String,
+        location: String
+    ) {
 
         if (TextUtils.isEmpty(userId)) {
             userId = mFirebaseDatabase!!.push().key
         }
 
-        val user = User(name, email, phone, "0.0", "0.0", location)
+        val user = User(name, email, phone, latitude, longitude, location)
 
         mFirebaseDatabase!!.child(userId!!).setValue(user)
         pDialog!!.cancel()

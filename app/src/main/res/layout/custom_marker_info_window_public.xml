@@ -17,7 +17,7 @@
             android:tint="@color/grey5"/>
 
     <TextView
-            android:id="@+id/textViewLocation"
+            android:id="@+id/lbl_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -37,6 +37,15 @@
             android:layout_centerVertical="true"
             android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
             android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/lbl_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top|bottom|left|right|center_vertical|fill_vertical|center_horizontal|fill_horizontal|center|fill|start|end"
+                android:textColor="@color/grey4"
+                android:text="kjkjkjkj"
+                android:textSize="20sp"/>
 
         <ImageView
                 style="@style/ChevronSmall"
