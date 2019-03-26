@@ -45,14 +45,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
     private var mMap: GoogleMap? = null
     private var mapView: MapView? = null
-    internal var latitude: Double = 0.toDouble()
-    internal var longitude: Double = 0.toDouble()
+    private var latitude: Double = 0.toDouble()
+    private var longitude: Double = 0.toDouble()
     private var mGoogleApiClient: GoogleApiClient? = null
     private var mCurrLocationMarker: Marker? = null
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var latLng: LatLng
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var mLastLocation: Location? = null
+    private var address: String? = null
 
     private var mFirebaseDatabase: DatabaseReference? = null
     private var mFirebaseInstance: FirebaseDatabase? = null
@@ -193,6 +194,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         latitude = location?.latitude!!
         longitude = location.longitude
 
+        address = getAddress(latitude, longitude)
+
         val latLng = LatLng(latitude, longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
@@ -200,6 +203,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_marker))
         mCurrLocationMarker = mMap?.addMarker(markerOptions)
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
+    }
+
+    private fun getAddress(latitude: Double, longitude: Double): String {
+
+        val geoCoder = Geocoder(this, Locale.getDefault())
+        val addresses: ArrayList<Address>
+        addresses = geoCoder.getFromLocation(latitude, longitude, 1) as ArrayList<Address>
+
+        val address  = addresses[0].getAddressLine(0)
+        val city = addresses[0].locality
+        val country = addresses[0].countryName
+
+        return "$address,$city,$country"
     }
 
     private fun checkLocationPermission(): Boolean {
@@ -287,20 +303,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     override fun getInfoContents(marker: Marker?): View {
-        val view: View? = null
+        val view = layoutInflater.inflate(R.layout.custom_marker_info_window, null)
+        val textViewName = view.findViewById(R.id.textViewName) as TextView
+        val textViewLocation = view.findViewById(R.id.textViewLocation) as TextView
 
         if (marker?.title == "My Location") {
-            layoutInflater.inflate(R.layout.custom_marker_info_window, null)
-            val textViewName = view?.findViewById(R.id.textViewName) as TextView
-            val textViewLocation = view.findViewById(R.id.lbl_location) as TextView
-
             textViewName.text = "Share My Location"
-            //textViewLocation.text =
+            textViewLocation.text = address
 
         } else {
-            layoutInflater.inflate(R.layout.custom_marker_info_window_public, null)
-            val textViewName = view?.findViewById(R.id.textViewName) as TextView
-            val textViewLocation = view.findViewById(R.id.lbl_location) as TextView
+            textViewName.text = "Public Location"
+            textViewLocation.text = address
         }
 
         return view
