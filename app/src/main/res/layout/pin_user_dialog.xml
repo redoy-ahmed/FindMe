@@ -14,7 +14,6 @@
         <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
@@ -30,8 +29,7 @@
                         android:hint="@string/name"
                         android:inputType="textPersonName"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@android:color/white"/>
+                        android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -46,8 +44,7 @@
                         android:hint="@string/email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@android:color/white"/>
+                        android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -62,8 +59,7 @@
                         android:hint="@string/phone"
                         android:inputType="phone"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@android:color/white"/>
+                        android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -79,8 +75,7 @@
                         android:hint="@string/location"
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColor="@android:color/white"/>
+                        android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 

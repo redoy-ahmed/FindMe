@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
@@ -86,6 +87,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     private fun initializeWidgets(savedInstanceState: Bundle?) {
 
         mFirebaseInstance = FirebaseDatabase.getInstance()
+
+        // get reference to 'users' node
+        mFirebaseDatabase = mFirebaseInstance!!.getReference("users")
+
+        pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog!!.progressHelper.barColor = Color.parseColor("#00bcd4")
+        pDialog!!.titleText = "Loading"
+        pDialog!!.setCancelable(false)
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission()
@@ -298,6 +307,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             val email = mDialogView.emailEditText.text.toString()
             val phone = mDialogView.phoneEditText.text.toString()
             val location = mDialogView.locationEditText.text.toString()
+
+            pDialog!!.show()
 
             shareLocation(name, email, phone, location)
         }
