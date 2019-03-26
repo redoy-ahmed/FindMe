@@ -3,4 +3,12 @@
 
     <string name="google_maps_key">AIzaSyD-Z_J5EKRyeoKJKZGYzX5mv02-_AbTXE0</string>
 
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="location">Location</string>
+
+    <string name="share">Share</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

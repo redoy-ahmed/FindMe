@@ -10,8 +10,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -27,9 +31,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.pin_user_dialog.view.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.InfoWindowAdapter,
+    GoogleMap.OnInfoWindowClickListener {
 
     private var mMap: GoogleMap? = null
     private var mapView: MapView? = null
@@ -41,6 +49,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     private lateinit var latLng: LatLng
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var mLastLocation: Location? = null
+
+    private var mFirebaseDatabase: DatabaseReference? = null
+    private var mFirebaseInstance: FirebaseDatabase? = null
+    private val TAG = MainActivity::class.java.simpleName
+    var pDialog: SweetAlertDialog? = null
+
+    var userId: String? = null
 
     companion object {
         private const val PLACE_PICKER_REQUEST = 3
@@ -69,6 +84,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     private fun initializeWidgets(savedInstanceState: Bundle?) {
+
+        mFirebaseInstance = FirebaseDatabase.getInstance()
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission()
@@ -101,14 +118,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
             ) {
                 buildGoogleApiClient()
                 mMap!!.isMyLocationEnabled = true
-            }
-            else {
+            } else {
                 checkLocationPermission()
             }
         } else {
             buildGoogleApiClient()
             mMap!!.isMyLocationEnabled = true
         }
+
+        mMap!!.setInfoWindowAdapter(this)
+        mMap!!.setOnInfoWindowClickListener(this)
     }
 
     @Synchronized
@@ -128,9 +147,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mLocationRequest.fastestInterval = MIN_UPDATE_INTERVAL
         mLocationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this)
         }
 
@@ -161,7 +183,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
         markerOptions.title("My Location")
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.boot_marker))
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_marker))
         mCurrLocationMarker = mMap?.addMarker(markerOptions)
 
         //move map camera
@@ -246,5 +268,77 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
                 Toast.makeText(applicationContext, addressText, Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun getInfoWindow(marker: Marker?): View? {
+        return null
+    }
+
+    override fun getInfoContents(marker: Marker?): View {
+        val view = layoutInflater.inflate(R.layout.custom_marker_info_window, null)
+
+        val textViewName = view.findViewById(R.id.textViewName) as TextView
+        val labelLocation = view.findViewById(R.id.lbl_location) as TextView
+        val labelPhone = view.findViewById(R.id.lbl_price) as TextView
+
+        return view
+    }
+
+    override fun onInfoWindowClick(marker: Marker?) {
+
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.pin_user_dialog, null)
+
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setTitle("Set Location")
+        val mAlertDialog = mBuilder.show()
+        mDialogView.shareButton.setOnClickListener {
+            mAlertDialog.dismiss()
+            val name = mDialogView.nameEditText.text.toString()
+            val email = mDialogView.emailEditText.text.toString()
+            val phone = mDialogView.phoneEditText.text.toString()
+            val location = mDialogView.locationEditText.text.toString()
+
+            shareLocation(name, email, phone, location)
+        }
+        mDialogView.cancelButton.setOnClickListener {
+            mAlertDialog.dismiss()
+        }
+
+        /*val intent = Intent(applicationContext, ProfileActivity::class.java)
+        startActivity(intent)*/
+    }
+
+    private fun shareLocation(name: String, email: String, phone: String, location: String) {
+
+        if (TextUtils.isEmpty(userId)) {
+            userId = mFirebaseDatabase!!.push().key
+        }
+
+        val user = User(name, email, phone, "0.0", "0.0", location)
+
+        mFirebaseDatabase!!.child(userId!!).setValue(user)
+        pDialog!!.cancel()
+
+        addUserChangeListener()
+    }
+
+    private fun addUserChangeListener() {
+
+        mFirebaseDatabase!!.child(userId!!).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val user = dataSnapshot.getValue(User::class.java)
+
+                if (user == null) {
+                    Log.e(TAG, "User data is null!")
+                    return
+                }
+                Log.e(TAG, "User data is changed!" + user.name)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Failed to read user", error.toException())
+            }
+        })
     }
 }

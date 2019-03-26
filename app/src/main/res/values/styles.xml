@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="ChevronSmall">
+        <item name="android:layout_width">8.0dip</item>
+        <item name="android:layout_height">14.0dip</item>
+    </style>
+
 </resources>
