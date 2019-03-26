@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">@color/blue_black_light</color>-->
+    <!--<color name="colorPrimaryDark">@color/black</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="light_gray">#dbdbdb</color>
+    <color name="gray">#7e7e7e</color>
+    <color name="semi_gray">#979797</color>
+    <color name="dark_gray">#696969</color>
+    <color name="bg_color">#f7f7f7</color>
+    <color name="black">#000000</color>
+    <!--<color name="white">#ffffff</color>-->
+    <color name="black_effective">#2a2a2a</color>
+    <color name="shadow">#d0d8dc</color>
+    <!--<color name="transparent">#00000000</color>-->
+    <color name="translucent_white">#88ffffff</color>
+    <color name="fb">#3b5998</color>
+    <color name="google">#d34836</color>
+
+    <!--Design colors-->
+    <color name="red_dark">#F06423</color>
+    <color name="red_dark2">#D85A1B</color>
+    <color name="cyan_light">#c9ebee</color>
+    <color name="cyan">#b5e3e7</color>
+    <color name="cyan_dark">#70BDC6</color>
+    <color name="navy_blue">#214258</color>
+    <color name="navy_blue_dark">#1C3A4E</color>
+    <color name="light_green">#78DC96</color>
+    <color name="light_blue">#55C8F0</color>
+    <color name="blue_black_dark">#13171d</color>
+    <color name="blue_black_light">#516179</color>
+    <color name="blue_grey_light">#A5B4C8</color>
+    <color name="orange">#FFA500</color>
+    <color name="yellow">#fff44f</color>
+
+
+
+
+    <!--<color name="colorPrimary">@color/airBlue</color>-->
+    <!--<color name="colorPrimaryDark">@color/airBlueMid</color>-->
+    <!--<color name="colorAccent">@color/airBlue</color>-->
+    <!--<color name="airBlue">#008fb4</color>-->
+    <!--<color name="white">#ffffff</color>-->
+    <!--<color name="grey1">#f5f9fb</color>-->
+    <!--<color name="grey2">#e7eef1</color>-->
+    <!--<color name="grey3">#cad7dc</color>-->
+    <!--<color name="grey4">#839094</color>-->
+    <!--<color name="grey5">#3a3d3e</color>-->
+    <!--<color name="red">#000</color>-->
+    <!--<color name="airBlueMid">#186b8e</color>-->
+    <!--<color name="airGreen">#9fc104</color>-->
+    <!--<color name="airGreenButtonEnd">#a4be01</color>-->
+    <!--<color name="airGreenButtonInset">#9dd801</color>-->
+    <!--<color name="airGreenButtonPressed">#749a01</color>-->
+    <!--<color name="airGreenButtonStart">#82ac02</color>-->
+    <!--<color name="airOrange">#f5ab5d</color>-->
+    <!--<color name="airOrangeLight">#f5cd5d</color>-->
+    <!--<color name="airPink">#fb675b</color>-->
+    <!--<color name="airPinkPressed">#e5695f</color>-->
+    <!--<color name="airRed">#ec514b</color>-->
+
+    <!--<color name="transparent_12">#1e000000</color>-->
+    <!--<color name="transparent_25">#3f000000</color>-->
+    <!--<color name="transparent_30">#4c000000</color>-->
+    <!--<color name="transparent_5">#0d000000</color>-->
+    <!--<color name="transparent_50">#80000000</color>-->
+    <!--<color name="transparent_5_white">#0dffffff</color>-->
+    <!--<color name="transparent_62">#9e000000</color>-->
+    <!--<color name="transparent_75">#bf000000</color>-->
+    <!--<color name="transparent_87">#dd000000</color>-->
+
+    <!--<color name="white_transparent_40">#66ffffff</color>-->
+    <!--<color name="white_transparent_70">#b3ffffff</color>-->
+    <!--<color name="white_transparent_89">#efffffff</color>-->
+    <!--<color name="white_transparent_98">#f9ffffff</color>-->
+
+    <!--<color name="blue100">#51a0ca</color>-->
+    <!--<color name="blue200">#1980b3</color>-->
+    <!--<color name="blue_end">#3e5d9d</color>-->
+    <!--<color name="blue_start">#5070b2</color>-->
+
+    <!--<color name="hotPink">#ff0080</color>-->
+
+    <!--<color name="splashScreenBackground">@color/airBlue</color>-->
+    <!--<color name="airtasker_application_background">@color/white</color>-->
+    <!--<color name="airtasker_primary_color">@color/airBlue</color>-->
+    <!--<color name="navigation_bar_colour">@color/white_transparent_89</color>-->
+    <!--<color name="default_blue_grey_selector">@color/blue100</color>-->
+
+    <!--<color name="transparent_37">#5e000000</color>-->
+    <!--<color name="pattens_blue_old">#caeaff</color>-->
+
+
+
+    <!--<color name="readMoreLessButtonColour">@color/airBlue</color>-->
+    <!--<color name="orangeLight">#ffd8a6</color>-->
+    <!--<color name="orangeDark">#b28216</color>-->
+
+
+    <!--<color name="greenAlertWidgetText">#7a9a1d</color>-->
+    <!--<color name="greenAlertWidgetBackground">#daf196</color>-->
+
+
+
+    <color name="pale_cerulean_old">#5ba0de</color>
+    <!-- new Added -->
+    <color name="colorAccent">@color/airBlue</color>
+    <color name="airBlue">#008fb4</color>
+    <color name="white">#ffffff</color>
+    <color name="grey1">#f5f9fb</color>
+    <color name="grey2">#e7eef1</color>
+    <color name="grey3">#cad7dc</color>
+    <color name="grey4">#839094</color>
+    <color name="grey5">#3a3d3e</color>
+    <color name="red">#000</color>
+    <color name="airBlueMid">#186b8e</color>
+    <color name="airGreen">#9fc104</color>
+    <color name="airGreenButtonEnd">#a4be01</color>
+    <color name="airGreenButtonInset">#9dd801</color>
+    <color name="airGreenButtonPressed">#749a01</color>
+    <color name="airGreenButtonStart">#82ac02</color>
+    <color name="airOrange">#f5ab5d</color>
+    <color name="airOrangeLight">#f5cd5d</color>
+    <color name="airPink">#fb675b</color>
+    <color name="airPinkPressed">#e5695f</color>
+    <color name="airRed">#ec514b</color>
+    <color name="readMoreLessButtonColour">@color/airBlue</color>
+    <color name="orangeLight">#ffd8a6</color>
+    <color name="orangeDark">#b28216</color>
+    <color name="greenAlertWidgetText">#7a9a1d</color>
+    <color name="greenAlertWidgetBackground">#daf196</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="transparent_12">#1e000000</color>
+    <color name="transparent_25">#3f000000</color>
+    <color name="transparent_30">#4c000000</color>
+    <color name="transparent_5">#0d000000</color>
+    <color name="transparent_50">#80000000</color>
+    <color name="transparent_5_white">#0dffffff</color>
+    <color name="transparent_62">#9e000000</color>
+    <color name="transparent_75">#bf000000</color>
+    <color name="transparent_87">#dd000000</color>
+
+    <color name="white_transparent_40">#66ffffff</color>
+    <color name="white_transparent_70">#b3ffffff</color>
+    <color name="white_transparent_89">#efffffff</color>
+    <color name="white_transparent_98">#f9ffffff</color>
+
+    <color name="blue100">#51a0ca</color>
+    <color name="blue200">#1980b3</color>
+    <color name="blue_end">#3e5d9d</color>
+    <color name="blue_start">#5070b2</color>
+
+    <color name="hotPink">#ff0080</color>
+
+    <!-- Shohokari Color -->
+
+
+    <color name="colorPrimary">@color/hotdipPink</color>
+    <color name="colorPrimaryDark">@color/shohokari_status_bar</color>
+
+    <color name="hotdipPink">#2AACE3</color>
+    <color name="shohokari_status_bar">#2AACE3</color>
+    <color name="shohokari_gray">#b2b4b6</color>
+
+    <color name="shohokari_transparent_color">#0A60A0</color>
+    <color name="shohokari_tab_bg">#077CA5</color>
+
+
+
+
+
+
+
+
+    <color name="splashScreenBackground">@color/hotdipPink</color>
+    <color name="airtasker_application_background">@color/white</color>
+    <color name="airtasker_primary_color">@color/hotdipPink</color>
+    <color name="navigation_bar_colour">@color/white_transparent_89</color>
+    <color name="default_blue_grey_selector">@color/blue100</color>
+
+    <color name="transparent_37">#5e000000</color>
+    <color name="pattens_blue_old">#caeaff</color>
+
+    <public type="color" name="text_selector_blue" id="0x7f0500d7" />
+    <public type="color" name="text_selector_grey_white_selector" id="0x7f0500d8" />
+    <public type="color" name="text_selector_white" id="0x7f0500d9" />
+
+
+
+
+    <!-- Chat Application Color -->
+    <color name="cornflower_blue">#6274e2</color>
+    <color name="cornflower_blue_dark">#303F9F</color>
+    <color name="cornflower_blue_darkest">#2d3a93</color>
+    <color name="gray_light">#e8e8e8</color>
+    <color name="gray_transparent">#a6efefef</color>
+    <color name="gray_dark">#858585</color>
+    <color name="gray_dark_transparent">#ae858585</color>
+    <color name="gray_darkest">#ae282828</color>
+    <color name="black_10">#19000000</color>
+    <color name="ivory">#f8efe6</color>
+    <color name="ivory_dark">#f7e8d9</color>
+    <color name="green">#38be55</color>
+    <color name="green_dark">#2da346</color>
+    <color name="brown">#4e342e</color>
+
+
+
+    <color name="taskStateBlue">@color/airBlue</color>
+    <color name="taskStateGreen">@color/airGreen</color>
+    <color name="taskStateGrey">@color/grey4</color>
+    <color name="taskStateRed">@color/airRed</color>
+    <color name="taskStateYellow">#fff4be36</color>
+
+</resources>
+
