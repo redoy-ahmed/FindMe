@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+    <ImageView
+            android:id="@+id/userImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/public_location_marker"/>
+
+    <TextView
+            android:id="@+id/userLocationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            tools:text="Ashkona, Medical Road"/>
+
+    <TextView
+            android:id="@+id/userLatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userLocationTextView"
+            tools:text="23.010101"/>
+
+    <TextView
+            android:id="@+id/userLngTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userLatTextView"
+            tools:text="99.00000"/>
+
+    <TextView
+            android:id="@+id/userTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userImageView"
+            app:layout_constraintTop_toBottomOf="@id/userLngTextView"
+            tools:text="12:30 PM"/>
+
+</android.support.constraint.ConstraintLayout>

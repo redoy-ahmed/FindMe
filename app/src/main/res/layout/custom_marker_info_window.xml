@@ -17,16 +17,60 @@
             android:tint="@color/grey5"/>
 
     <TextView
+            android:id="@+id/textViewEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="@dimen/small"
+            android:layout_below="@id/textViewName"
+            android:textSize="16sp"
+            android:tint="@color/grey5"/>
+
+    <TextView
+            android:id="@+id/textViewPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="@dimen/small"
+            android:textSize="16sp"
+            android:layout_below="@id/textViewEmail"
+            android:tint="@color/grey5"/>
+
+    <TextView
+            android:id="@+id/textViewLat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="@dimen/small"
+            android:textSize="16sp"
+            android:layout_below="@id/textViewPhone"
+            android:tint="@color/grey5"/>
+
+    <TextView
+            android:id="@+id/textViewLng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="@dimen/small"
+            android:textSize="16sp"
+            android:layout_below="@id/textViewLat"
+            android:tint="@color/grey5"/>
+
+    <TextView
             android:id="@+id/textViewLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textViewName"
+            android:layout_below="@+id/textViewLng"
             android:layout_toLeftOf="@+id/list_item_map_marker_layout_chevron"
             android:layout_toStartOf="@+id/list_item_map_marker_layout_chevron"
             android:paddingBottom="@dimen/small"
-            android:tint="@color/grey4"/>
+            android:tint="@color/grey4"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginRight="0dp" android:layout_marginEnd="0dp"/>
 
     <LinearLayout
             android:id="@+id/list_item_map_marker_layout_chevron"

@@ -1,8 +1,11 @@
 package com.findme
 
 import android.Manifest
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
@@ -14,8 +17,10 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -35,6 +40,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.common.AccountPicker
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.pin_user_dialog.view.*
 import java.util.*
@@ -54,13 +61,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var mLastLocation: Location? = null
     private var address: String? = null
+    private var userEmail: String? = null
+
+    private val peoples: ArrayList<User> = ArrayList()
+    private val locationLog: ArrayList<com.findme.Location> = ArrayList()
 
     private var mFirebaseDatabase: DatabaseReference? = null
     private var mFirebaseInstance: FirebaseDatabase? = null
     private val TAG = MainActivity::class.java.simpleName
     var pDialog: SweetAlertDialog? = null
 
-    var userId: String? = null
+    private var userId: String? = null
+
+    private var sharedPreference: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
 
     companion object {
         private const val PLACE_PICKER_REQUEST = 3
@@ -86,14 +100,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         setContentView(R.layout.activity_main)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext!!)
         initializeWidgets(savedInstanceState)
+        showPeoples()
     }
 
     private fun initializeWidgets(savedInstanceState: Bundle?) {
 
         mFirebaseInstance = FirebaseDatabase.getInstance()
-
-        // get reference to 'users' node
         mFirebaseDatabase = mFirebaseInstance!!.getReference("users")
+
+        sharedPreference = getSharedPreferences("FIND_ME", Context.MODE_PRIVATE)
+        editor = sharedPreference?.edit()
+        userId = sharedPreference?.getString("userId", "")
 
         pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
         pDialog!!.progressHelper.barColor = Color.parseColor("#00bcd4")
@@ -114,6 +131,104 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         mapView!!.onCreate(savedInstanceState)
         mapView!!.onResume()
         mapView!!.getMapAsync(this)
+    }
+
+    private fun showPeoples() {
+
+        val sharedPref = getSharedPreferences("NEAR_ME", Context.MODE_PRIVATE)
+        pDialog!!.show()
+
+        val database = FirebaseDatabase.getInstance().reference
+        val ref = database.child("users")
+
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    val user = singleSnapshot.getValue(User::class.java)
+                    if (user?.email != sharedPref.getString("email", ""))
+                        peoples.add(user!!)
+                }
+                showPeoplesOnMap()
+                pDialog!!.cancel()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException())
+            }
+        })
+    }
+
+    private fun showPeoplesOnMap() {
+        for (user in this.peoples) {
+            latLng = LatLng(user.lat.toDouble(), user.lng.toDouble())
+            val markerOptions = MarkerOptions()
+            markerOptions.position(latLng)
+            markerOptions.title(user.name)
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.public_location_marker))
+            mCurrLocationMarker = mMap!!.addMarker(markerOptions)
+        }
+    }
+
+    private fun setOnClickListeners() {
+        mMap?.setOnMapClickListener {
+
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker!!.remove()
+            }
+
+            latitude = it?.latitude!!
+            longitude = it.longitude
+
+            address = getAddress(latitude, longitude)
+
+            val latLng = LatLng(latitude, longitude)
+            val markerOptions = MarkerOptions()
+            markerOptions.position(latLng)
+            markerOptions.title("My Location")
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_marker))
+
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.pin_user_dialog, null)
+
+            val mBuilder = AlertDialog.Builder(this)
+                .setView(mDialogView)
+                .setTitle("Share Location")
+            val mAlertDialog = mBuilder.show()
+
+            mDialogView.locationEditText.setText(address)
+
+            mDialogView.shareButton.setOnClickListener {
+                val name = mDialogView.nameEditText.text.toString()
+                val email = mDialogView.emailEditText.text.toString()
+                val phone = mDialogView.phoneEditText.text.toString()
+                val location = mDialogView.locationEditText.text.toString()
+
+                when {
+                    TextUtils.isEmpty(name) -> Toast.makeText(
+                        applicationContext,
+                        "Enter name!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    TextUtils.isEmpty(email) -> Toast.makeText(
+                        applicationContext,
+                        "Enter email!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    TextUtils.isEmpty(phone) -> Toast.makeText(
+                        applicationContext,
+                        "Enter phone!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else -> {
+                        mAlertDialog.dismiss()
+                        shareLocation(name, email, phone, latitude.toString(), longitude.toString(), location)
+                        mCurrLocationMarker = mMap?.addMarker(markerOptions)
+                    }
+                }
+            }
+            mDialogView.cancelButton.setOnClickListener {
+                mAlertDialog.dismiss()
+            }
+        }
     }
 
     override fun onMapReady(mGoogleMap: GoogleMap) {
@@ -186,23 +301,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     }
 
     override fun onLocationChanged(location: Location?) {
-        mLastLocation = location
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker!!.remove()
-        }
-
         latitude = location?.latitude!!
         longitude = location.longitude
-
         address = getAddress(latitude, longitude)
-
         val latLng = LatLng(latitude, longitude)
-        val markerOptions = MarkerOptions()
-        markerOptions.position(latLng)
-        markerOptions.title("My Location")
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.my_location_marker))
-        mCurrLocationMarker = mMap?.addMarker(markerOptions)
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
+        setOnClickListeners()
     }
 
     private fun getAddress(latitude: Double, longitude: Double): String {
@@ -211,7 +315,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         val addresses: ArrayList<Address>
         addresses = geoCoder.getFromLocation(latitude, longitude, 1) as ArrayList<Address>
 
-        val address  = addresses[0].getAddressLine(0)
+        val address = addresses[0].getAddressLine(0)
         val city = addresses[0].locality
         val country = addresses[0].countryName
 
@@ -305,45 +409,64 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     override fun getInfoContents(marker: Marker?): View {
         val view = layoutInflater.inflate(R.layout.custom_marker_info_window, null)
         val textViewName = view.findViewById(R.id.textViewName) as TextView
+        val textViewEmail = view.findViewById(R.id.textViewEmail) as TextView
+        val textViewPhone = view.findViewById(R.id.textViewPhone) as TextView
+        val textViewLat = view.findViewById(R.id.textViewLat) as TextView
+        val textViewLng = view.findViewById(R.id.textViewLng) as TextView
         val textViewLocation = view.findViewById(R.id.textViewLocation) as TextView
 
         if (marker?.title == "My Location") {
-            textViewName.text = "Share My Location"
+            textViewName.text = "My Location"
+            textViewEmail.text = sharedPreference?.getString("email", "")
+            textViewPhone.text = sharedPreference?.getString("phone", "")
+            textViewLat.text = sharedPreference?.getString("lat", "")
+            textViewLng.text = sharedPreference?.getString("lng", "")
             textViewLocation.text = address
-
+            userEmail = sharedPreference?.getString("email", "")
         } else {
-            textViewName.text = "Public Location"
-            textViewLocation.text = address
+            for (user in this.peoples) {
+                if (user.name == marker?.title) {
+                    textViewName.text = user.name
+                    textViewEmail.text = user.email
+                    textViewPhone.text = user.phone
+                    textViewLat.text = user.lat
+                    textViewLng.text = user.lng
+                    textViewLocation.text = user.location
+                    userEmail = user.email
+                }
+            }
         }
+
+        locationLog.clear()
+
+        val database = FirebaseDatabase.getInstance().reference
+        val ref = database.child("users")
+
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (singleSnapshot in dataSnapshot.children) {
+                    val user = singleSnapshot.getValue(User::class.java)
+                    if (user?.email == userEmail) {
+                        for (location in user?.locationLog!!) {
+                            locationLog.add(location)
+                        }
+                        break
+                    }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "onCancelled", databaseError.toException())
+            }
+        })
 
         return view
     }
 
     override fun onInfoWindowClick(marker: Marker?) {
-
-        val mDialogView = LayoutInflater.from(this).inflate(R.layout.pin_user_dialog, null)
-
-        val mBuilder = AlertDialog.Builder(this)
-            .setView(mDialogView)
-            .setTitle("Share Location")
-        val mAlertDialog = mBuilder.show()
-        mDialogView.shareButton.setOnClickListener {
-            mAlertDialog.dismiss()
-            val name = mDialogView.nameEditText.text.toString()
-            val email = mDialogView.emailEditText.text.toString()
-            val phone = mDialogView.phoneEditText.text.toString()
-            val location = mDialogView.locationEditText.text.toString()
-
-            pDialog!!.show()
-
-            shareLocation(name, email, phone, latitude.toString(), longitude.toString(), location)
-        }
-        mDialogView.cancelButton.setOnClickListener {
-            mAlertDialog.dismiss()
-        }
-
-        /*val intent = Intent(applicationContext, ProfileActivity::class.java)
-        startActivity(intent)*/
+        val intent = Intent(applicationContext, UserLogActivity::class.java)
+        intent.putExtra("userEmail", userEmail)
+        startActivity(intent)
     }
 
     private fun shareLocation(
@@ -357,14 +480,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
 
         if (TextUtils.isEmpty(userId)) {
             userId = mFirebaseDatabase!!.push().key
+            editor?.putString("userId", userId)
+            editor?.putString("email", email)
+            editor?.putString("phone", phone)
+            editor?.putString("lat", latitude)
+            editor?.putString("lng", longitude)
+            editor?.commit()
         }
 
-        val user = User(name, email, phone, latitude, longitude, location)
+        val locationObj = Location(name, Calendar.getInstance().time.toString(), latitude, longitude, location)
+
+        locationLog.add(locationObj)
+
+        val user = User(name, email, phone, latitude, longitude, location, locationLog)
 
         mFirebaseDatabase!!.child(userId!!).setValue(user)
-        pDialog!!.cancel()
 
-        addUserChangeListener()
+        //addUserChangeListener()
     }
 
     private fun addUserChangeListener() {

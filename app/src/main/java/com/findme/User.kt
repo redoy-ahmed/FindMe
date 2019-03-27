@@ -1,6 +1,7 @@
 package com.findme
 
 import com.google.firebase.database.IgnoreExtraProperties
+import java.util.ArrayList
 
 @IgnoreExtraProperties
 data class User(
@@ -10,6 +11,7 @@ data class User(
     val phone: String = "",
     val lat: String = "",
     val lng: String = "",
-    val location: String = ""
+    val location: String = "",
+    val locationLog: ArrayList<Location> = ArrayList()
 )
 
