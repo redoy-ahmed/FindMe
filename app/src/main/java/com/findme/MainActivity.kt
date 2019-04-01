@@ -76,6 +76,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     private var sharedPreference: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
 
+    private var isFirstTime: Boolean = true
+
     companion object {
         private const val PLACE_PICKER_REQUEST = 3
         const val MY_PERMISSIONS_REQUEST_LOCATION = 99
@@ -305,8 +307,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         longitude = location.longitude
         address = getAddress(latitude, longitude)
         val latLng = LatLng(latitude, longitude)
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
         setOnClickListeners()
+
+        if (isFirstTime) {
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17F))
+            isFirstTime = false
+        }
     }
 
     private fun getAddress(latitude: Double, longitude: Double): String {
@@ -477,16 +483,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
         longitude: String,
         location: String
     ) {
-
-        if (TextUtils.isEmpty(userId)) {
-            userId = mFirebaseDatabase!!.push().key
-            editor?.putString("userId", userId)
-            editor?.putString("email", email)
-            editor?.putString("phone", phone)
-            editor?.putString("lat", latitude)
-            editor?.putString("lng", longitude)
-            editor?.commit()
-        }
+        userId = mFirebaseDatabase!!.push().key
+        editor?.putString("userId", userId)
+        editor?.putString("email", email)
+        editor?.putString("phone", phone)
+        editor?.putString("lat", latitude)
+        editor?.putString("lng", longitude)
+        editor?.commit()
 
         val locationObj = Location(name, Calendar.getInstance().time.toString(), latitude, longitude, location)
 
