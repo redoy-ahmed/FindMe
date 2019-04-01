@@ -8,13 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/> <!-- permission to get phone number -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS"/> <!-- permission to get email address -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
     <application
             android:allowBackup="true"
@@ -25,6 +18,11 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
+
+        <uses-library
+                android:name="org.apache.http.legacy"
+                android:required="false" />
+
         <activity android:name=".UserLogActivity">
         </activity>
         <activity android:name=".ProfileActivity">

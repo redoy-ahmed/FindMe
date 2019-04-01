@@ -383,6 +383,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.Co
     override fun onPause() {
         super.onPause()
         mapView!!.onPause()
+
+        if(pDialog != null)
+            pDialog!!.dismiss()
     }
 
     override fun onDestroy() {
